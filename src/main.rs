@@ -12,11 +12,11 @@ mod cli {
     use super::*; // Import common items from outer scope
     use clap::{Parser, Subcommand};
     use indicatif::{ProgressBar, ProgressStyle};
-    use std::io;
     use file_splitter::split_single_file; // Import from our lib
     use file_splitter::restore_single_file; // Import from our lib
     use file_splitter::SplitInfo; // Import from our lib
     use serde_json; // For parsing SplitInfo from JSON
+    use anyhow::Context; // <--- ADD THIS LINE
 
     #[derive(Parser, Debug)]
     #[command(author, version, about, long_about = None)]
@@ -98,7 +98,7 @@ mod cli {
                         output_dir,
                         *compress,
                         Some(Box::new(progress_cb)),
-                        Some(Box::new(message_cb)),
+                        Some(Box::new(message_cb)), // <--- WRAP IN Box::new()
                     )?;
                     progress.finish_with_message(format!("'{}' splitting complete", file_path.display()));
                 }
@@ -111,10 +111,10 @@ mod cli {
                     println!("\nReading restore info file: {}", info_file_path.display());
                     
                     let metadata_content = fs::read_to_string(info_file_path)
-                        .with_context(|| format!("Failed to read restore info file: {}", info_file_path.display()))?;
+                        .context(format!("Failed to read restore info file: {}", info_file_path.display()))?; // <--- CHANGED with_context TO context AND REMOVED CLOSURE
                     
                     let file_info: SplitInfo = serde_json::from_str(&metadata_content)
-                        .with_context(|| format!("Failed to parse restore info JSON file: {}", info_file_path.display()))?;
+                        .context(format!("Failed to parse restore info JSON file: {}", info_file_path.display()))?; // <--- CHANGED with_context TO context AND REMOVED CLOSURE
 
                     let progress = ProgressBar::new(0); // Placeholder
                     progress.set_style(ProgressStyle::default_bar()
@@ -143,7 +143,7 @@ mod cli {
                         input_dir,
                         output_dir,
                         Some(Box::new(progress_cb)),
-                        Some(message_cb),
+                        Some(Box::new(message_cb)), // <--- WRAP IN Box::new()
                     )?;
                     progress.finish_with_message(format!("'{}' restoration complete", file_info.original_filename));
                 }
