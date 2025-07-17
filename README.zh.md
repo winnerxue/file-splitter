@@ -23,8 +23,8 @@
 
 2. **克隆仓库**：
    ```bash
-   git clone https://github.com/winnerxue/file-splitter.git
-   cd file-splitter
+   git clone https://github.com/winnerxue/file_splitter.git
+   cd file_splitter
    ```
 
 3. **构建项目**：

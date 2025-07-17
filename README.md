@@ -23,8 +23,8 @@ The **File Splitter and Restorer** is designed to manage large files efficiently
 
 2. **Clone the Repository**:
    ```bash
-   git clone https://github.com/winnerxue/file-splitter.git
-   cd file-splitter
+   git clone https://github.com/winnerxue/file_splitter.git
+   cd file_splitter
    ```
 
 3. **Build the Project**:
